@@ -80,8 +80,30 @@ ApacheBench （AB）
 
 # 第2章 第一个Netty程序
 
+mac
+
 ```
 mvn package -DskipTests -Dos.detected.classifier=osx-x86_64
+```
+
+window
+
+```
+
+
+执行mvn clean compile或mvn clean install命令时报以下错误
+
+Some Enforcer rules have failed. Look above for specific messages explaining why the rule failed.
+1.
+输入以下命令执行
+
+mvn clean install -DskipTests  -Denforcer.skip=true
+-----------------------------------
+编译项目报错:Some Enforcer rules have failed. Look above for specific messages explaining why the rule failed.
+https://blog.51cto.com/u_15067225/3714562
+
+解决方法
+mvn clean install -DskipTests  -Denforcer.skip=true
 ```
 
 # 第3章 Netty的基本组件
@@ -191,9 +213,9 @@ Using ChannelOptions and attributes
 
 #### 9.3 Bootstrapping Netty servers with ServerBootstrap
 
-看一个例子
+##### 看一个例子
 
-```
+```java
 public final class HttpHelloWorldServer {
 
     static final boolean SSL = System.getProperty("ssl") != null;
@@ -211,6 +233,7 @@ public final class HttpHelloWorldServer {
 
         // Configure the server.
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        // cpu cores * 2
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
@@ -238,25 +261,11 @@ public final class HttpHelloWorldServer {
 }
 ```
 
+##### EventloopGrop new的调用过程
 
+<img src="Netty实战\NioEventLoopGroup_new-16593174405597.svg" alt="NioEventLoopGroup_new" style="zoom:80%;" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Exposes the configuration of an AbstractBootstrap.**
+##### **Exposes the configuration of an AbstractBootstrap.**
 
 <img src="Netty实战/image-20220719143309924.png" alt="image-20220719143309924" style="zoom: 33%;" />
 
@@ -270,6 +279,8 @@ ServerBootstrapConfig(group: NioEventLoopGroup, channelFactory: ReflectiveChanne
 
 
 
+##### 根据ChannelFactory创建一个Channel
+
 **io.netty.channel.ChannelFactory 通过反射调用默认构造函数实例化一个新的 Channel**
 
 <img src="Netty实战/image-20220719152142054.png" alt="image-20220719152142054" style="zoom:50%;" />
@@ -278,9 +289,21 @@ ServerBootstrapConfig(group: NioEventLoopGroup, channelFactory: ReflectiveChanne
 
 
 
+#####  NioEventLoopGroup与 NioEventLoop 的关系
+
+1. NioEventLoopGroup
+
+<img src="Netty实战\NioEventLoopGroup.png" alt="NioEventLoopGroup" style="zoom:33%;" />
+
+2. NioEventLoop
+
+<img src="Netty实战\NioEventLoop-16593156181933.png" alt="NioEventLoop" style="zoom: 33%;" />
 
 
 
+##### ServerBootstrap 启动之 AbstractBootstrap.bind()
+
+<img src="Netty实战\AbstractBootstrap_bind.svg" alt="AbstractBootstrap_bind" style="zoom:25%;" />
 
 
 
@@ -305,6 +328,20 @@ ServerBootstrapConfig(group: NioEventLoopGroup, channelFactory: ReflectiveChanne
 # 第14章 implement Custom Codec
 
 # 第15章 Choose your rigth thread mode
+
+covers：
+
+* Detail about the thread-model
+* EventLoop
+* Concurrency
+* Task execution
+* Task scheduling
+
+<img src="Netty实战\NioEventLoop.png" alt="NioEventLoop" style="zoom:50%;" />
+
+面试问题： Netty 3 和 Netty 4 线程模型的区别？
+
+
 
 # 第16章  从EventLoop注册和撤销
 
